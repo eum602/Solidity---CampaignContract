@@ -15,10 +15,10 @@ const CompiledFactory = require("./build/CampaignFactory.json");
 
 const provider =new HDWalletProvider(
   //primero le especificare el mnemonico de mi cuenta:
-  'achieve memory champion inject casino tail enrich dose until popular differ congress',
+  'poner tus doce palabras aqui',
   //ahora espeficando el link de la URL de la red a la que nos queremos conectar.
   //En este caso sera la red gratuita rinkeby, a traves del API de infura
-  'https://rinkeby.infura.io/xXsA5BSVwfRc79yQAU26'
+  'poner el link de infura'
 );//infura es gratuito
 const web3 = new Web3(provider);/*pasando el provider, recientemente seteado,
 al contructor Web3 y crando la instancia llamada web3; cabe mecionar que la
