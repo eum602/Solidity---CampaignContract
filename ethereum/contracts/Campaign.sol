@@ -1,4 +1,4 @@
-pragma solidity ^0.4.22;
+pragma solidity >=0.4.0 <0.7.0;
 /*Creaindo un contrato factory que me permita crear el contrato Campaign a través
 de este contrato*/
 contract CampaignFactory{
@@ -8,19 +8,19 @@ contract CampaignFactory{
     /*Creando la funcion que crea una instacia de otro contrato */
     function createCampaign(uint minimum) public {
         /*creando una nueva instancia del contrato Campaign */
-        address newCampaign = new Campaign(minimum, msg.sender); /*Los argumentos
+        Campaign newCampaign = new Campaign(minimum, msg.sender); /*Los argumentos
         enviados se setean por primera vez en el constructor de la nueva instancia
         de Campaign; se le envia al contrato, el minimo de aporte y
         la direccion de quien quiere crear la campaña, este sera
         el manager en la nueva instancia de Campaign*/
         /*almacenando la direccion de la nueva campaña creada dentro del array
         de campañas creadas*/
-        deployedCampaigns.push(newCampaign);
+        deployedCampaigns.push(address(newCampaign));
     }
 
     /*mostrando las direcciones de las nuevas instancias del contrato Campaign
     que ha sido creado*/
-    function getDeployedCampaign() public view returns(address[]){
+    function getDeployedCampaign() public view returns( address [] memory){//added memory
         return deployedCampaigns;
     }
 }
@@ -56,7 +56,8 @@ contract Campaign{
     struct Request{
         string description;//descripcion del request
         uint value;//valor que se enviara al supplier
-        address recipient;//supplier a quien se destinara los fondos
+        address payable recipient;//supplier a quien se destinara los fondos
+        //0.5.10 address payable
         bool complete;
         uint approvalCount;//cantidad de votos aprovados
         mapping(address => bool ) approvals;
@@ -82,10 +83,11 @@ contract Campaign{
 
     /*Constructor*/
     //constructor(uint minimum) public {
-    constructor(uint minimum,address creator) public {
+    constructor(uint minimum,address creator) public  {
         //manager = msg.sender;
         manager = creator;
         minimumContribution = minimum;
+        
     }
 
     function contribute () public payable {/*payable me permite
@@ -100,7 +102,7 @@ contract Campaign{
         direccion de quien contribuye el value de true, osea que ha contribuido*/
     }
 
-    function createRequest(string description, uint value, address recipient)
+    function createRequest(string memory description, uint value, address payable recipient)//0.5.10 address payable
         public restricted {
             /*require(approvers[msg.sender]);/*se utiliza el map approvers para
             verificar que el manager tambien haya depositado dinero*/
@@ -196,7 +198,7 @@ contract Campaign{
         require(request.approvalCount > (approversCount/2));
         require(!request.complete);
         request.recipient.transfer(request.value);/*se transfiere el dinero
-        a la direccion que se encuentra en la direccion del struct requests[index].value*/
+        //a la direccion que se encuentra en la direccion del struct requests[index].value*/
         request.complete = true;
 
     }
