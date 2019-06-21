@@ -37,10 +37,27 @@ const campaignPath = path.resolve(__dirname, "contracts", "Campaign.sol");
 const source = fs.readFileSync(campaignPath, "utf-8");
 //usamos el modulo fs para leer el archivo y codificarlo en formato
 //utf-8
+console.log(typeof(source))
 
 /*3. Ahora compilando los dos contratos que se encuentran dentro del
 archivo compile.js*/
-const output = solc.compile(source, 1).contracts;
+const input = {
+  language: 'Solidity',
+  sources: {
+      'campaign.sol': {
+          content: source//'import ./contracts/Campaign.sol'
+      }
+  },
+  settings: {
+      outputSelection: {
+          '*': {
+              '*': [ '*' ]
+          }
+      }
+  }
+}
+
+const output = JSON.parse(solc.compile(JSON.stringify(input))).contracts['campaign.sol'];
 /*de la compilacion solo rescato la propiedad llamada contracts*/
 /*guardo el archivo compilado en output, este archivo tendra dos objetos
 -Campaign
